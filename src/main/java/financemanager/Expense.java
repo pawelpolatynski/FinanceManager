@@ -71,52 +71,5 @@ public class Expense {
     public void setDate(LocalDate newDate) {
         this.date = newDate;
     }
-    public static Expense createNewExpense(User user, String name, BigDecimal value, Type type, LocalDate date, ArrayList<Expense> expensesList) {
-        Expense exp = new Expense(user, name, value, type, date);
-        expensesList.add(exp);
-        return exp;
-    }
-    public static void saveExpenses(ArrayList<Expense> expensesList) {
-        File file = new File("./expensesData.txt");
-        try {
-            FileWriter writer = new FileWriter(file);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-            for (Expense e: expensesList) {
-                writer.write(e.getUser().getId() + ";" +
-                                e.getName() + ";" +
-                                e.getValue() + ";" +
-                                e.getType().getId() + ";" +
-                                formatter.format(e.getDate()));
-                writer.write("\n");
-            }
 
-            writer.close();
-        }
-        catch (IOException e) {
-            System.out.println("IOException occured while savin expenses!");
-        }
-    }
-
-    public static void loadExpenses(ArrayList<Expense> expensesList, ArrayList<User> usersList, ArrayList<Type> typesList) throws ParseException {
-        File file = new File("./expensesData.txt");
-        if (file.exists()) {
-            try {
-                Scanner reader = new Scanner(file);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-                while (reader.hasNext()) {
-                    String text = reader.nextLine();
-                    String[] line = text.split(";");
-                    createNewExpense(User.findUserById(Long.parseLong(line[0]), usersList),
-                            line[1],
-                            new BigDecimal(line[2]),
-                            Type.findTypeById(Long.parseLong(line[3]), typesList),
-                            LocalDate.parse(line[4], formatter),
-                            expensesList);
-                }
-                reader.close();
-            } catch (IOException e) {
-                System.out.println("IOException occured while loading users!");
-            }
-        }
-    }
 }
